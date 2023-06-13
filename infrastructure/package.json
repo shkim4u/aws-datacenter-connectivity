@@ -1,0 +1,30 @@
+{
+  "name": "infrastructure",
+  "version": "0.1.0",
+  "bin": {
+    "infrastructure": "bin/infrastructure.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "deploy": "cdk synth && cdk deploy --all --outputs-file ./cdk-outputs.json --require-approval=never"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.1",
+    "@types/node": "20.1.7",
+    "aws-cdk": "2.81.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.0.4"
+  },
+  "dependencies": {
+    "@aws-cdk/lambda-layer-kubectl-v26": "^2.0.0",
+    "amazon-eks-irsa-cfn": "^0.1.1",
+    "aws-cdk-lib": "2.81.0",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21"
+  }
+}
