@@ -20,7 +20,7 @@
    - (위에서 3번 링크 항목은 참고만 하시면 되고 각자 맡으신) 아래 항목을 수행하시면 됩니다.)<br>
    - (참고) [Networking Immersion Day](https://catalog.workshops.aws/networking/en-US/beginner/lab1)
    - [AWS 클라우드 측 구성](./docs/aws-cloud-setup.md)<br>
-   - [데이터센터 측 구성](/.docs/datacenter-setup.md)<br>
+   - [데이터센터 측 구성](./docs/datacenter-setup.md)<br>
 
 2. AWS와 DC 환경 연결
     - [(AWS 측) Customer Gateway 생성](./docs/create-customer-gateway.md)
