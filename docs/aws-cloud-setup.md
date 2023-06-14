@@ -229,7 +229,7 @@ df -h
 ## AWS 클라우드 환경 구성 리포지터리 받기 (git clone)
 ```bash
 cd ~/environment
-git clone https://github.com/sanghyoun/aws-datacenter-connectivity.git
+git clone https://github.com/shkim4u/aws-datacenter-connectivity.git
 ```
 
 ## AWS 클라우드 환경 생성
