@@ -16,7 +16,7 @@
 실습은 2인 1조로 진행하면 좋습니다.
 
 1. 환경 구성<br>
-  ![하이브리드 인프라 소개](./docs/assets/hybrid-infra-introduction.png)
+  ![하이브리드 인프라 소개](./docs/assets/hybrid-infra-introduction-simplified.png)
    - (위에서 3번 링크 항목은 참고만 하시면 되고 각자 맡으신) 아래 항목을 수행하시면 됩니다.)<br>
    - (참고) [Networking Immersion Day](https://catalog.workshops.aws/networking/en-US/beginner/lab1)
    - [AWS 클라우드 측 구성](./docs/aws-cloud-setup.md)<br>
@@ -28,7 +28,7 @@
     - [(AWS 측) AWS로부터 데이터센터 네트워크에 접속 테스트](./docs/aws-test-vpn-connection-to-dc.md)
 
 3. AWS -> 데이터센터 (Outbound) DNS 질의 구성 (example.corp 도메인)
-    - [(AWS 측) Rout 53 리졸버 설정](./docs/aws-setup-route53-resolver.md) 
+    - [(AWS 측) Route 53 리졸버 설정](./docs/aws-setup-route53-resolver.md) 
 
 4. 데이터센터 -> AWS (Inbound) DNS 질의 구성 (aws.samsung.com 도메인)
     - 아래 가이드에 따라 구성해 봅니다.
