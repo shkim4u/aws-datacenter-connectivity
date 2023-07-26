@@ -97,6 +97,12 @@ echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
 
 ## 7. Extend disk size.
 echo "7. Extending disk size..."
+echo "7.1. Checking disk size before extending..."
+dh -h
+
+echo "7.2. Now extending the disk size..."
 curl -fsSL https://raw.githubusercontent.com/shkim4u/kubernetes-misc/main/aws-cloud9/resize.sh | bash
+
+echo "7.3. Checking disk size with extension..."
 df -h
 

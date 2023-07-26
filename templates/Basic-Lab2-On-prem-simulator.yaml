@@ -35,7 +35,7 @@ Parameters:
     - t3.large
     - t3.xlarge
     - t3.2xlarge
-    Default: t2.micro
+    Default: t3.2xlarge
     Description: Bastion EC2 instance type.
     Type: String
   LatestAmiId:

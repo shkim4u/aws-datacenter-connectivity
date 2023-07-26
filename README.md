@@ -32,6 +32,12 @@
 
 4. 데이터센터 -> AWS (Inbound) DNS 질의 구성 (aws.samsung.com 도메인)
     - 아래 가이드에 따라 구성해 봅니다.
+
+[//]: # (우리가 구성하는 데이터 센터 <-> AWS 클라우드 연계된 모습은 다음과 같습니다.)
+
+[//]: # ()
+[//]: # (https://www.linkedin.com/pulse/sharedcentralised-services-aws-transit-gateway-ibrahim-kunduraci/)
+
 ---
 
 ## 데이터센터 -> AWS (Inbound) DNS 질의 구성 (aws.samsung.com 도메인)
@@ -67,7 +73,13 @@
 >    - Security Group은 "3389: 0.0.0.0/0 ", "모든 트래픽: 10.0.0.0/8"으로 지정합니다. 
 
 1. 데이터센터의 Public Subnet에 AD-DS (Active Directory Domain Service) 서버 설치
-    - 해당 서버는 월활한 작업을 위해 Public Subnet에 설치한 후 원격 데스크탑을 통해 접속합니다.
+    - 해당 서버는 원활한 작업을 위해 ```OnPremVpc-Network-Immday-DC``` VPC의 Public Subnet에 설치한 후 원격 데스크탑을 통해 접속합니다.
+    - 인스턴스 이름은 ```DC-DNS-Server```로 지정합니다.
+    - 키 페어는 새로 생성하되 이름은 ```dc-keypair```로 지정합니다.
+    - 보안 그룹 설정 이름은 ```DC-DNS-Server```로 합니다.
+      - 보안 그룹 규칙 1: 유형 - RDP, 소스 유형 - 위치 무관 (이미 지정되어 있습니다)
+      - 보안 그룹 규칙 2 (추가): 유형 - 모든 트래픽, 소스 유형 - 사용자 지정, 소스 - 10.0.0.0/8
+    - 스토리지 용량: 100 GiB
 
     ![](./docs/assets/dc-adds-server-instance-01.png)<br>
     ![](./docs/assets/dc-adds-server-instance-02.png)<br>
@@ -81,38 +93,73 @@
 
     ![](./docs/assets/dc-adds-server-rdp.png)
 
-3. AD-DS 서버에서 필요한 기능을 설치합니다.<br>
+3. 강사의 안내에 따라 AD-DS 서버에서 필요한 기능을 설치합니다.<br>
+   1.  ```시작 메뉴``` > ```Server Manager``` > ```Add roles and features```
 
     ![](./docs/assets/dc-adds-feature-01.png)<br>
-    ![](./docs/assets/dc-adds-feature-02.png)<br>
+   2. 아래 세개의 서버 Role을 선택합니다.
+       1. ```Active Directory Domain Services```
+       2. ```Active Directory Federation Services```
+       3. ```Active Directory Lightweight Directory Services```
+       4. (Optional) 추가로 ```Feautres``` 화면에서 ```Telnet Client``` 도 선택하여 설치해 주면 좋습니다.
+
+   ![](./docs/assets/dc-adds-feature-02.png)<br>
+
+   3. 서버 구성 요소 설치가 완료되면 ```Server Manager``` 화면에 표시되는 ```Promote this server as a domain controller``` 실행 링크를 클릭합니다.
+
     ![](./docs/assets/dc-adds-feature-03.png)<br>
+
+   4. 표시되는 화면에서 ```Add a new forest```를 선택하고 ```Root domain name```에 ```samsung.com```을 입력합니다. 
+
     ![](./docs/assets/dc-adds-feature-04.png)<br>
+
+   5. 자신이 원하는 암호를 설정합니다.
+
     ![](./docs/assets/dc-adds-feature-05.png)<br>
-    ![](./docs/assets/dc-adds-feature-06.png)<br>
-    ![](./docs/assets/dc-adds-feature-07.png)<br>
-    ![](./docs/assets/dc-adds-feature-08.png)<br>
-    ![](./docs/assets/dc-adds-feature-09.png)<br>
-    ![](./docs/assets/dc-adds-feature-10.png)<br>
-    ![](./docs/assets/dc-adds-feature-11.png)<br>
+   6. 이후 과정에서는 기본적으로 제시되는 값을 받아들이고 진행합니다.<br>
+   ![](./docs/assets/dc-adds-feature-06.png)<br>
+   ![](./docs/assets/dc-adds-feature-07.png)<br>
+   ![](./docs/assets/dc-adds-feature-08.png)<br>
+   ![](./docs/assets/dc-adds-feature-09.png)<br>
+   ![](./docs/assets/dc-adds-feature-10.png)<br>
+   ![](./docs/assets/dc-adds-feature-11.png)<br>
+
+    7. 모든 설정이 완료되면 시스템이 재시작됩니다.
 
 ### 2. (AWS) Route 53 Private Hosted Zone
 1. Route 53 Private Hosted Zone 생성
-   - Domain: aws.samsung.com
-   - 이 서브 도메인이 DC -> AWS로 Conditional Forwarding 될 것입니다.
+   - AWS 콘솔: ```Route 53``` > ```호스팅 영역 (Hosted zones)```<br>
+   - 도메인 이름: ```aws.samsung.com```<br>
+   - 유형: ```프라이빗 호스팅 영역```<br>
+   - 호스팅 영역과 연결할 VPC: EC2 인스턴스가 존재하는 ```ap-northeast-2``` 리전의 ```VPC 0```, ```VPC 1```, ```VPC 2``` 모두 추가<br>
+   - 이 서브 도메인이 DC -> AWS로 Conditional Forwarding 될 것입니다.<br>
 
-    - 서비스 Route 53 > Hosted Zones<br> 
-    ![](./docs/assets/aws-route53-hosed-zone-01.png)<br>
-    ![](./docs/assets/aws-route53-hosed-zone-02.png)<br>
+      ![](./docs/assets/aws-route53-hosed-zone-01.png)<br>
+      ![](./docs/assets/aws-route53-hosed-zone-02.png)<br>
 
-2. VPC 0, 1, 2에 생성되어 있는 EC2 인스턴스 세 개의 IP를 A 레코드로 추가
+2. VPC 0, 1, 2에 생성되어 있는 EC2 인스턴스 세 개의 IP를 생성된 호스팅 영역의 A 레코드로 추가
+   - A 레코드 이름은 ```www<n>``` 혹은 ```instance<n>``` 과 같은 형식으로 지정. 예) ```www1```  
 
-    ![](./docs/assets/aws-route53-hosted-zone-a-records.png)
+       ![](./docs/assets/aws-route53-hosted-zone-a-records.png)
 
 
 ### 3. (AWS) Route 53 Inbound Endpoint 설정
 
 1. 온프레미스 데이터센터로부터 DNS 질의를 받을 수 있도록 Inbound Endpoint를 생성해 줍니다.
-    - 서비스 Route 53 > Resolver > Inbound Endpoints
+    - AWS 콘솔: ```Route 53``` > ```확인자 (Resolver)```> ```인바운드 엔드포인트 (Inbound Endpoints)```
+    - 이름: ```DC2AWS```
+    - VPC: ```VPC 0``` 선택
+    - 보안 그룹: 해당 VPC에 생성된 ```DC2AWS-Ec2Stack-0-XXX```와 같은 이름을 가진 디폴트가 아닌 보안 그룹
+    - 엔드포인트 유형: ```IPv4```
+    - IP 주소 #1
+      - 가용 영역: ```ap-northeast-2a```
+      - 서브넷: Private Subnet 선택
+      - ```자동으로 선택된 IPv4 주소 사용``` 선택
+    - IP 주소 #2
+      - 가용 영역: ```ap-northeast-2c```
+      - 서브넷: Private Subnet 선택
+      - ```자동으로 선택된 IPv4 주소 사용``` 선택
+ 
     > (주의) Region (리전)이 서울 (ap-northeast-2) 임을 확인하고 작업합니다.
 
     ![](./docs/assets/aws-route53-inbound-endpoints-01.png)<br>
@@ -120,7 +167,7 @@
     ![](./docs/assets/aws-route53-inbound-endpoints-03.png)<br>
     ![](./docs/assets/aws-route53-inbound-endpoints-04.png)<br>
 
-2. 생성된 Inbound Endpoint에서 IP 주소 (2개)를 기록하고 DC 담당자 분께 전달합니다.
+2. 생성된 Inbound Endpoint의 IP 주소 (2개)를 기록하고 DC 담당자 분께 전달합니다. 이 주소는 AD-DS 서버에서 Subdomain에 대한 DNS 질의를 전달 (Forward) 하기 위한 설정에 사용됩니다.
 
     ![](./docs/assets/aws-route53-inbound-endpoints-05.png)
 
