@@ -38,6 +38,8 @@
 [//]: # ()
 [//]: # (https://www.linkedin.com/pulse/sharedcentralised-services-aws-transit-gateway-ibrahim-kunduraci/)
 
+5. (Optional) 임직원 중 일부를 AWS 클라우드 콘솔에 SSO 접근 권한 부여하기 (ADFS 사용)
+
 ---
 
 ## 데이터센터 -> AWS (Inbound) DNS 질의 구성 (aws.samsung.com 도메인)
@@ -183,7 +185,7 @@
     ![](./docs/assets/dc-lookup-delegation-04.png)<br>
 
     > (참고) <br>
-    "A timeout occurred during validation ..." 관련 에러는 Windows DNS 서버가 SOA 레코드를 요청하는데 Route 53 Resolver가 여기에 응답하지 않음에 따라 나타나는 현상으로 무시하고 진행한다.<br>
+    "A timeout occurred during validation ..." 관련 에러는 Windows DNS 서버가 SOA 레코드를 요청하는데 Route 53 Resolver가 여기에 응답하지 않음에 따라 나타나는 현상으로 무시하고 진행해도 무방합니다.<br>
     > - https://serverfault.com/questions/956050/conditional-forwarding-to-aws-route-53-nameserver-fails-validation
 
    ![](./docs/assets/dc-lookup-delegation-05.png)<br>
@@ -195,18 +197,30 @@
     ![](./docs/assets/dc-conditional-fowarder-02.png)<br>
 
    > (참고) <br>
-   "The server with this IP address is not authoritative for the required zone." 관련 에러도 Route 53 Inbound Endpoint가 SOA (Start of Authority)로 동작하지 않는 Recursive Resolver 임을 나타내는 것으로 무시하고 진행할 수 있다
+   "The server with this IP address is not authoritative for the required zone." 관련 에러도 Route 53 Inbound Endpoint가 SOA (Start of Authority)로 동작하지 않는 Recursive Resolver 임을 나타내는 것으로 무시하고 진행할 수 있습니다.<br><br>
+
+   > <u>**(도전!!!)<br>**</u>
+   > 만약 ```A timeout occurred ...```와 같은 오류 메시지가 표시되면 보안 그룹, 라우팅 테이블과 같은 네트워크 관련 내용을 살펴보아야 합니다.<br>
+   > <u>***어느 부분의 설정이 잘못된 것일까요?***</u><br><br>
+   > (힌트)
+   > DC -> AWS로 흘러가는 네트워크 트래픽의 게이트웨이 역할을 하는 VPN 장비, 즉, 우리 구성에서는 ```Bastion``` 호스트와 관련된 설정을 살펴보시면 됩니다.
+   > <br><br>
+   > 설정을 한 이후에는 AD-DS 서버에서 AWS의 인스턴스 중 하나에 (VPC 0, 1, 혹은 2) IP 주소를 사용하여 Ping이 정상적으로 도달하는지 점검해 봅니다.
 
    ![](./docs/assets/dc-conditional-fowarder-03.png)<br>
 
-3. Customer Gateway인 Bastion Host의 Security Group에서 모든 트래픽에 대해 ```10.0.0.0/8``` 대역을 소스로 추가해 줍니다.<br>
+[//]: # (3. Customer Gateway인 Bastion Host의 Security Group에서 모든 트래픽에 대해 ```10.0.0.0/8``` 대역을 소스로 추가해 줍니다.<br>)
 
-    ![](./docs/assets/dc-bastion-host-security-add-for-dc-2-aws.png)
+[//]: # ()
+[//]: # (    ![]&#40;./docs/assets/dc-bastion-host-security-add-for-dc-2-aws.png&#41;)
+
+
 
 
 ### 5. (DC) DC -> AWS 서버 Ping 테스트 (DNS 이름 사용)
 
 1. 우선 데이터센터의 DNS 서버 (AD-DS 윈도우 서버)에서 AWS 클라우드에 위치한 인스턴스 중 하나로 DNS 이름으로 Ping을 테스트해 봅니다.<br>
+아래 그림에서는 ```instance1.aws.samsung.com``` DNS 호스트 이름을 사용한 것으로 나타나지만 설정에 따라 다를 수 있습니다. (예: ```ping www0.aws.samsung.com```)
  
     ![](./docs/assets/dc-ping-test-to-aws.png)
 
@@ -224,9 +238,13 @@
 우리는 앞서 ```example.corp```에 대해서 AWS -> DC로 DNS 질의가 수행되는 것을 확인하였습니다.<br>
 
 시간이 허락하면 새롭게 구성된 AD-DS DNS 서버로 ```samsung.com``` 도메인에 대한 질의를 수행하는 작업을 진행해 보세요.
-1. AWS 측에서 Outbound Resolver Rule 설정: samsung.com 도메인
+1. AWS 측에서 Outbound Resolver Rule 설정: ```samsung.com``` 도메인
 2. AD-DS DNS 서버에 ```myapp.samsung.com``` A Record를 생성
-3. AWS 인스턴스에서 아래 명령어를 실행하여 "Hellow, world"가 반환되는 것을 확인
+3. AWS 인스턴스에서 아래 명령어를 실행하여 "Hello, world"가 반환되는 것을 확인
 ```bash
 curl myapp.samsung.com
 ```
+
+## (Optional) (Optional) 임직원 중 일부를 AWS 클라우드 콘솔에 SSO 접근 권한 부여하기 (ADFS 사용)
+다음 기술 블로그를 사용하여 강사와 함께 (Ad-hoc) 임직원 중 일부를 AWS 클라우드 콘솔에 SSO 접근 권한을 부여해 보도록 하겠습니다. (ADFS 사용)
+https://aws.amazon.com/blogs/security/enabling-federation-to-aws-using-windows-active-directory-adfs-and-saml-2-0/
