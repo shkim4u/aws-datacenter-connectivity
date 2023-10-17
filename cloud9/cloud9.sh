@@ -106,3 +106,7 @@ curl -fsSL https://raw.githubusercontent.com/shkim4u/kubernetes-misc/main/aws-cl
 echo "7.3. Checking disk size with extension..."
 df -h
 
+## 8. AWS CLI Completer.
+echo "complete -C '/usr/local/bin/aws_completer' aws" >> ~/.bashrc
+. ~/.bashrc
+

@@ -55,15 +55,14 @@ echo $EC2_INSTANCE_ID
 STATUS=""
 while [ "$STATUS" != "running" ]; do
   # Get the current status of the instance
-  status=$(aws ec2 describe-instances --instance-ids ${EC2_INSTANCE_ID} --query 'Reservations[].Instances[].State.Name' --output text)
+  STATUS=$(aws ec2 describe-instances --instance-ids ${EC2_INSTANCE_ID} --query 'Reservations[].Instances[].State.Name' --output text)
 
-  if [ "STATUS" != "running" ]; then
+  if [ "$STATUS" != "running" ]; then
     echo "Instance is not yet running. Waiting for 5 seconds..."
     sleep 5
   fi
 done
-
-echo "Cloud9 instance is now running!"
+echo "Cloud9 instance is now running."
 
 export CLOUD_INSTANCE_PROFILE_ASSOCIATION_ID=`aws ec2 describe-iam-instance-profile-associations --filters Name=instance-id,Values=${EC2_INSTANCE_ID} --query "IamInstanceProfileAssociations[0].AssociationId" --output text`
 echo $CLOUD_INSTANCE_PROFILE_ASSOCIATION_ID

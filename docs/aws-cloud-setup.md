@@ -36,23 +36,29 @@ curl -fsSL https://raw.githubusercontent.com/shkim4u/aws-datacenter-connectivity
 ```
 ![](./assets/bootstrap-cloud9-via-cloudshell.png)
 
-### 1.1. AWS Cloud9으로 IDE 구성
-
+### 1.2. AWS Cloud9 환경 생성 (AWS Management Console 사용)
+#### 1.2.1. Cloud9 환경 생성
 1. [AWS Cloud9 콘솔창](https://console.aws.amazon.com/cloud9)에 접속한 후, Create environment 버튼을 클릭합니다.
 2. Details에서 이름을 다음과 같이 ```cloud-workspace```으로 입력합니다.
 ```
-hybrid-cloud-workspace
+cloud-workspace
 ```
+![Cloud9 Name](../images/cloud9/create-cloud9-name.png)
 
-3. New EC2 Instance에서 인스턴스 타입 (Instance Type)으로 m5.large (8 GiB RAM + 2vCPU) 혹은 선호하는 인스턴스 타입을 선택합니다. 플랫폼 (Platform)은 "Amazon Linux 2"를 선택하고 Timeout은 "1 Day"를 선택한 후 하단의 Create를 클릭하여 생성합니다.
+3. New EC2 Instance에서 인스턴스 타입 (Instance Type)으로 ```추가 인스턴스 유형``` > ```m5.4xlarge (16vCPU + 64GiB RAM)``` 혹은 선호하는 인스턴스 유형을 선택합니다. 플랫폼 (Platform)은 "Amazon Linux 2"를 선택하고 Timeout은 "1 Day"를 선택한 후 하단의 Create를 클릭하여 생성합니다. 나머지는 기본값을 그대로 사용합니다.
 
-### 1.2. IAM Role 생성
+   ![Create Cloud9 Details](../images/cloud9/create-cloud9-details.png)
+
+### 1.2.2. IAM Role 생성
 
 IAM Role은 특정 권한을 가진 IAM 자격 증명입니다. IAM 역할의 경우, IAM 사용자 및 AWS가 제공하는 서비스에 사용할 수 있습니다. 서비스에 IAM Role을 부여할 경우, 서비스가 사용자를 대신하여 수임받은 역할을 수행합니다.
 
 본 실습에서는 Administrator access 정책을 가진 IAM Role을 생성하여 AWS Cloud9에 사용하지만, 실제 프로덕션 환경을 구동할 때에는 최소 권한을 부여하는 것이 적합합니다.
 
-1. [여기](https://console.aws.amazon.com/iam/home#/roles$new?step=type&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess)를 클릭하여 IAM Role 페이지에 접속합니다.
+1. [여기](https://console.aws.amazon.com/iam/home#/roles$new?step=type&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess)를 클릭하여 IAM Role 페이지에 접속합니다.<br>
+
+    ![Cloud9 IAM Role Create](../images/cloud9/create-cloud9-iam-role.png)
+
 2. AWS Service 및 EC2가 선택된 것을 확인하고 Next: Permissions를 클릭합니다.
 3. AdministratorAccess 정책이 선택된 것을 확인하고 Next: Tags를 클릭합니다.
 4. 태그 추가(선택 사항) 단계에서 Next: Review를 클릭합니다.
@@ -61,17 +67,21 @@ IAM Role은 특정 권한을 가진 IAM 자격 증명입니다. IAM 역할의 �
 cloud9-admin
 ```
 
-### 1.3. IDE (AWS Cloud9 인스턴스)에 IAM Role 부여
+![Create Cloud9 Role Review](../images/cloud9/create-cloud9-role-review.png)
+
+### 1.2.3. IDE (AWS Cloud9 인스턴스)에 IAM Role 부여
 
 AWS Cloud9 환경은 EC2 인스턴스로 구동됩니다. 따라서 EC2 콘솔에서 AWS Cloud9 인스턴스에 방금 생성한 IAM Role을 부여합니다.
 
 1. [여기](https://console.aws.amazon.com/ec2/v2/home?#Instances:sort=desc:launchTime)를 클릭하여 EC2 인스턴스 페이지에 접속합니다.
-2. 해당 인스턴스를 선택 후, Actions > Security > Modify IAM Role을 클릭합니다 (참고: 설정된 언어에 따라 동일한 의미를 가지는 다른 언어로 표시될 수 있습니다).
+2. 해당 인스턴스를 선택 후, ```작업 (Actions) > 보안 (Security) > IAM 역할 수정 (Modify IAM Role)```을 클릭합니다 (참고: 설정된 언어에 따라 동일한 의미를 가지는 다른 언어로 표시될 수 있습니다).<br>
    ![attach-role.png](./assets/attach-role.png)
-3. IAM Role에서 ```cloud9-admin```을 선택한 후, Save 버튼을 클릭합니다.
+3. IAM Role에서 ```cloud9-admin```을 선택한 후, Save 버튼을 클릭합니다.<br>
+   > (참고) 여기에 표시되는 화면은 실제로 설정하고 있는 환경과 조금씩 다를 수 있습니다.<br>
+
    ![modify-role.png](./assets/modify-role-new.png)
 
-### 1.4. IDE에서 IAM 설정 업데이트
+### 1.2.4. IDE에서 IAM 설정 업데이트
 
 기본적으로 AWS Cloud9는 IAM 인증 정보 (Credentials)를 동적으로 관리합니다. 해당 인증 정보는 Cloud9 환경을 생성한 Principal의 권한을 상속받아서 필요한 권한이 없을 수 있으며 15분마다 갱신되므로 긴 수행 시간을 가지는 작업의 경우에는 인증 토큰이 만료됨에 따라 실패할 수도 있습니다. 따라서 이를 비활성화하고 앞서 생성한 IAM Role을 Cloud9 환경에 부여하고자 합니다.
 
