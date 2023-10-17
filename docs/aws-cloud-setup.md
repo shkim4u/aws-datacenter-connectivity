@@ -8,10 +8,13 @@ AWS 클라우드 환경은 강사에 의해 미리 공유된 AWS IaC 기능인 C
 ## Agenda
 
 1. Cloud9 시작하기
-  - 1.1. AWS Cloud9으로 IDE 구성
-  - 1.2. IAM Role 생성
-  - 1.3. IDE(AWS Cloud9 인스턴스)에 IAM Role 부여
-  - 1.4. IDE에서 IAM 설정 업데이트
+    * 1.1. AWS Cloud9 IDE 생성 (AWS CLI 사용)
+    * 1.2. AWS Cloud9 IDE 생성 (AWS Management Console 사용)
+        * 1.2.1. Cloud9 환경 생성
+        * 1.2.2. IAM Role 생성
+        * 1.2.3. IDE(AWS Cloud9 인스턴스)에 IAM Role 부여
+        * 1.2.4. IDE에서 IAM 설정 업데이트
+2. Cloud9 통합 설정 파일 실행
 2. Cloud9 통합 환경 설정 파일 실행
 3. AWS 클라우드 환경 구성 리포지터리 받기 (git clone)
 4. AWS 클라우드 자원 생성
@@ -25,10 +28,18 @@ AWS Cloud9으로 실습 환경을 구축하는 순서는 아래와 같습니다.
 - IDE(AWS Cloud9 인스턴스)에 IAM Role 부여
 - IDE에서 IAM 설정 업데이트
 
+### 1.1. AWS Cloud9 환경 생성 (AWS CLI 사용)
+강사에 의해 제공된 AWS 관리 콘솔에서 ```CloudShell```을 실행한 후 아래 명령을 수행하여 ```Cloud9``` 환경을 생성해 줍니다.<br>
+```CloudShell```도 다수의 개발 언어와 런타임, 그리고 클라우드 환경을 다룰 수 있는 CLI를 기본적으로 제공하지만 보다 풍부한 통합 개발 환경을 제공하는 ```Cloud9```을 사용하기로 합니다.<br>
+```bash
+curl -fsSL https://raw.githubusercontent.com/shkim4u/aws-datacenter-connectivity/main/cloud9/bootstrap-v2.sh | bash
+```
+![](./assets/bootstrap-cloud9-via-cloudshell.png)
+
 ### 1.1. AWS Cloud9으로 IDE 구성
 
 1. [AWS Cloud9 콘솔창](https://console.aws.amazon.com/cloud9)에 접속한 후, Create environment 버튼을 클릭합니다.
-2. Details에서 이름을 다음과 같이 ```hybrid-cloud-workspace```으로 입력합니다.
+2. Details에서 이름을 다음과 같이 ```cloud-workspace```으로 입력합니다.
 ```
 hybrid-cloud-workspace
 ```
