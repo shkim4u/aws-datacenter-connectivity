@@ -154,18 +154,10 @@ git clone https://github.com/shkim4u/aws-datacenter-connectivity.git
 # 1. IaC 디렉토리로 이동
 cd ~/environment/aws-datacenter-connectivity/infrastructure
 
-# 2. Upgrade CDK
-# (2023-07-24) 아래는 더 이상 필요없습니다. (이전 과정에서 수행)
-#npm uninstall -g aws-cdk
-#rm -rf ~/.nvm/versions/node/v16.20.0/bin/cdk
-#npm install -g aws-cdk
-#cdk --version
-
-
-# 3. npm install package dependencies
+# 2. npm install package dependencies
 npm install
 
-# 4. AWS CDK Bootstrap
+# 3. AWS CDK Bootstrap
 cdk bootstrap
 
 # 4. 아래 명령은 CDK synthesize & deploy를 실행함
@@ -175,7 +167,9 @@ npm run deploy
 
 자원이 생성되는 동안에 AWS 클라우드 측에서 어떤 자원을 생성하고 있는지 잠깐 살펴보도록 하겠습니다.<br>
 * [멀티 VPC AWS 클라우드 환경](https://catalog.workshops.aws/networking/en-US/beginner/lab1)<br>
-  * (출처: Networking Immersion Day 워크샵)<br>
-  * ![멀티 VPC AWS 어카운트 환경](./assets/aws-cloud-transit-gateway.png)
+    * ![멀티 VPC AWS 어카운트 환경](./assets/aws-cloud-transit-gateway.png)
+
+[//]: # (  * &#40;출처: Networking Immersion Day 워크샵&#41;<br>)
+
 
 

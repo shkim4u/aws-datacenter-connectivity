@@ -20,7 +20,7 @@ Amazon 가상 프라이빗 클라우드 (Amazon VPC)는 AWS 관리형 사이트 
 
 이제 시뮬레이션된 온프레미스 환경을 위해 제공된 CloudFormation 템플릿을 배포할 준비가 되었습니다. 이 스택은 퍼블릭 및 프라이빗 서브넷이 포함된 1개의 VPC와 Bastion 호스트, DNS 서버, 애플리케이션 서버를 위한 3개의 EC2 인스턴스를 생성합니다.
 
-* CloudFormation 템플릿 다운로드: [데이터센터용 CloudFormation 템플릿](../templates/Basic-Lab2-On-prem-simulator.yaml)
+* CloudFormation 템플릿 다운로드: [데이터센터용 CloudFormation 템플릿](https://raw.githubusercontent.com/shkim4u/aws-datacenter-connectivity/main/templates/Basic-Lab2-On-prem-simulator.yaml)
 * 다운로드한 CloudFormation 템플릿을 실행하여 자원을 아래와 같이 생성합니다.
   - 이름
   ```bash
