@@ -24,20 +24,20 @@ Amazon 가상 프라이빗 클라우드 (Amazon VPC)는 AWS 관리형 사이트 
 * 다운로드한 CloudFormation 템플릿을 실행하여 자원을 아래와 같이 생성합니다.
   - 이름
   ```bash
-    Network-Immday-DC
+    DC-Resources
   ```
   - InstanceType
   ```bash
   t3.2xlarge
   ```
   - 이외의 값들은 기본값을 수락하고 "다음"을 클릭하여 생성합니다.<br>
-![DC CloudFormation Values](./assets/dc-cloudformation-values.png)
+![DC CloudFormation Values](./assets/dc-cloudformation-values-new.png)
 
 2. 데이터센터 환경 둘러보기<br>
 
 이제 Bastion 호스트, 웹 애플리케이션 서버, DNS 서버로 구성된 시뮬레이션된 데이터센터 환경을 시작했습니다. 이 환경을 AWS 환경에 연결하기 전에 구성 요소가 제대로 작동하는지 확인해 보겠습니다.<br>
 
-- EC2 콘솔에서 연결 옵션을 사용하여 이름에 OnPremBastion-을 사용합니다(예: "세션 관리자" 사용).
+- EC2 콘솔에서 ```OnPremBastion-``` 이름을 가진 인스턴스에 연결해봅니다 ("세션 관리자" 사용).
 ![Bastion Host 접속](./assets/EC2-Connect.png)<br>
 ![Bastion Host 접속](./assets/connect-with-ssm.png)<br>
 
@@ -47,7 +47,7 @@ Amazon 가상 프라이빗 클라우드 (Amazon VPC)는 AWS 관리형 사이트 
   ```
   ![resolv.conf 파일](./assets/bastion-cat-revolv-conf.png)
 
-  "nameserver" 줄에 주목하세요. 이 줄은 위의 CloudFormation 스택 출력에서 확인한 DNS 서버의 IP 주소를 가리키고 있어야 합니다.<br>
+  ```nameserver``` 줄에 주목하세요. 이 줄은 위의 CloudFormation 스택의 출력 (Outputs)에서 확인한 DNS 서버의 IP 주소를 가리키고 있어야 합니다.<br>
 
 - 애플리케이션 서버를 테스트합니다. 시뮬레이션된 데이터센터 환경에서는 내부 도메인 이름 "example.corp"를 사용하고 애플리케이션 서버에는 "myapp.example.corp"에 대한 호스트 이름 항목이 있습니다. curl 명령을 사용하여 애플리케이션 서버가 실행 중인지 테스트할 수 있습니다:
   ```bash

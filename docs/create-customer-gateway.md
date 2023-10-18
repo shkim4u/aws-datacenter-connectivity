@@ -6,7 +6,7 @@ AWS 클라우드 쪽에서 아래 순서로 수행하여 고객 게이드웨이�
   ![Transit Gateway Attachment](./assets/create-transit-gateway-attachment.png)
 
 2. Attachment 유형으로 ```VPN```을 선택하고, "Customer Gateway"을 새롭게 생성하도록 지정합니다. 
-   - (중요) IP 주소에는 <u>**데이터센터에서 생성된 Bastion 호스트의 주소**</u>를 입력합니다. (데이터센터를 맡으신 분께 요청)
+   - (중요) IP 주소에는 <u>***데이터센터에서 생성된 Bastion 호스트의 Public IP 주소***</u>를 입력합니다. (데이터센터를 맡으신 분께 요청)
    - Routing 옵션으로 ```Static```을 선택합니다.
    - 다른 설정값들은 기본값을 사용합니다.
    - "Create attachment"를 클릭합니다.<br>

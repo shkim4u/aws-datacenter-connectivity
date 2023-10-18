@@ -49,9 +49,14 @@
 해당 실습은 강사 가이드에 따라 아래에 기술된 순서대로 수행합니다.
 
 ### 개요: Route 53 Inbound Resolver (DC -> AWS)
-- 참고 사이트
-  - https://aws-labs.net/winlab0-buildinfra/hybriddns.html
-  - Step 3: Configuring Route 53 Inbound Resolver (DC -> AWS Cloud)
+
+[//]: # (- 참고 사이트)
+
+[//]: # (  - https://aws-labs.net/winlab0-buildinfra/hybriddns.html)
+
+[//]: # (  - Step 3: Configuring Route 53 Inbound Resolver &#40;DC -> AWS Cloud&#41;)
+
+- 인바운드 리졸버 아키텍처 (DC -> AWS)
 
 ![](./docs/assets/dc-aws-inbound-resolver.png)
 
@@ -77,7 +82,7 @@
 >    - Security Group은 "3389: 0.0.0.0/0 ", "모든 트래픽: 10.0.0.0/8"으로 지정합니다. 
 
 1. 데이터센터의 Public Subnet에 AD-DS (Active Directory Domain Service) 서버 설치
-    - 해당 서버는 원활한 작업을 위해 ```OnPremVpc-Network-Immday-DC``` VPC의 Public Subnet에 설치한 후 원격 데스크탑을 통해 접속합니다.
+    - 해당 서버는 원활한 작업을 위해 ```OnPremVpc-DC-Resources``` VPC의 Public Subnet에 설치한 후 원격 데스크탑을 통해 접속합니다.
     - 인스턴스 이름은 ```DC-DNS-Server```로 지정합니다.
     - 키 페어는 새로 생성하되 이름은 ```dc-keypair```로 지정합니다.
     - 보안 그룹 설정 이름은 ```DC-DNS-Server```로 합니다.
@@ -140,6 +145,10 @@
 
       ![](./docs/assets/aws-route53-hosed-zone-01.png)<br>
       ![](./docs/assets/aws-route53-hosed-zone-02.png)<br>
+
+   > (참고)
+   > - [Amazon Route 53 Resolver란 무엇인가요?](https://docs.aws.amazon.com/ko_kr/Route53/latest/DeveloperGuide/resolver.html)
+   > - [온프레미스 도메인의 AWS 이전 형태에 따른 Route53/DNS 설정 및 고려 사항](https://www.lgcns.com/blog/cns-tech/aws-ambassador/41401/)
 
 2. VPC 0, 1, 2에 생성되어 있는 EC2 인스턴스 세 개의 IP를 생성된 호스팅 영역의 A 레코드로 추가
    - A 레코드 이름은 ```www<n>``` 혹은 ```instance<n>``` 과 같은 형식으로 지정. 예) ```www1```  
@@ -222,7 +231,7 @@
 ### 5. (DC) DC -> AWS 서버 Ping 테스트 (DNS 이름 사용)
 
 1. 우선 데이터센터의 DNS 서버 (AD-DS 윈도우 서버)에서 AWS 클라우드에 위치한 인스턴스 중 하나로 DNS 이름으로 Ping을 테스트해 봅니다.<br>
-아래 그림에서는 ```instance1.aws.samsung.com``` DNS 호스트 이름을 사용한 것으로 나타나지만 설정에 따라 다를 수 있습니다. (예: ```ping www0.aws.samsung.com```)
+아래 그림에서는```instance1.aws.samsung.com``` DNS 호스트 이름을 사용한 것으로 나타나지만 설정에 따라 다를 수 있습니다. (예: ```ping www0.aws.samsung.com```)
  
     ![](./docs/assets/dc-ping-test-to-aws.png)
 
@@ -247,6 +256,6 @@
 curl myapp.samsung.com
 ```
 
-## (Optional) (Optional) 임직원 중 일부를 AWS 클라우드 콘솔에 SSO 접근 권한 부여하기 (ADFS 사용)
+## (Optional) 임직원 중 일부를 AWS 클라우드 콘솔에 SSO 접근 권한 부여하기 (ADFS 사용)
 다음 기술 블로그를 사용하여 강사와 함께 (Ad-hoc) 임직원 중 일부를 AWS 클라우드 콘솔에 SSO 접근 권한을 부여해 보도록 하겠습니다. (ADFS 사용)
 https://aws.amazon.com/blogs/security/enabling-federation-to-aws-using-windows-active-directory-adfs-and-saml-2-0/
