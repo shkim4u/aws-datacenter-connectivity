@@ -16,7 +16,8 @@ aws iam create-instance-profile --instance-profile-name AWSCloud9SSMInstanceProf
 aws iam add-role-to-instance-profile --role-name AWSCloud9SSMAccessRole --instance-profile-name AWSCloud9SSMInstanceProfile
 
 # 기본 VPC 조회
-export VPC_ID=`aws ec2 describe-vpcs --query "Vpcs[?isDefault==true].VpcId" --output text`
+#export VPC_ID=`aws ec2 describe-vpcs --query "Vpcs[?isDefault==true].VpcId" --output text`
+export VPC_ID=`aws ec2 describe-vpcs --filter "Name=isDefault,Values=true" --query "Vpcs[0].VpcId" --output text`
 echo $VPC_ID
 
 # 서브넷 조회
